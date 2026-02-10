@@ -16,7 +16,7 @@
     <p>This is a simple web page that lets you write and run Python code right in your browser using Pyodide. It's great for harmless tools and experiments when you don't have access to a PC. Note: It runs client-side, so no server is involved, and it supports basic Python features.</p>
     
     <textarea id="code" placeholder="Write your Python code here...">
-print("Hello, world!")
+print("hi")
     </textarea>
     <br>
     <button onclick="runCode()">Run Code</button>
@@ -29,7 +29,16 @@ print("Hello, world!")
 
         async function loadPyodideAndRun() {
             if (!pyodide) {
-                pyodide = await loadPyodide();
+                pyodide = await loadPyodide({
+                    stdout: (text) => {
+                        const outputDiv = document.getElementById("output");
+                        outputDiv.innerHTML += text + "\n";
+                    },
+                    stderr: (text) => {
+                        const outputDiv = document.getElementById("output");
+                        outputDiv.innerHTML += "Error: " + text + "\n";
+                    }
+                });
                 await pyodide.loadPackage("micropip");
             }
         }
@@ -38,13 +47,12 @@ print("Hello, world!")
             await loadPyodideAndRun();
             const code = document.getElementById("code").value;
             const outputDiv = document.getElementById("output");
-            outputDiv.innerHTML = "Running...";
+            outputDiv.innerHTML = "Running...\n";
 
             try {
-                let result = await pyodide.runPythonAsync(code);
-                outputDiv.innerHTML = result ? result.toString() : "No output";
+                await pyodide.runPythonAsync(code);
             } catch (error) {
-                outputDiv.innerHTML = error.toString();
+                outputDiv.innerHTML += "\n" + error.toString();
             }
         }
     </script>
