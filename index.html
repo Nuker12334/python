@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Python Runner</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #code { width: 100%; height: 300px; font-family: monospace; }
+        #output { margin-top: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; white-space: pre-wrap; }
+        button { margin-top: 10px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Run Python in Your Browser</h1>
+    <p>This is a simple web page that lets you write and run Python code right in your browser using Pyodide. It's great for harmless tools and experiments when you don't have access to a PC. Note: It runs client-side, so no server is involved, and it supports basic Python features.</p>
+    
+    <textarea id="code" placeholder="Write your Python code here...">
+print("Hello, world!")
+    </textarea>
+    <br>
+    <button onclick="runCode()">Run Code</button>
+    
+    <div id="output">Output will appear here...</div>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+    <script>
+        let pyodide;
+
+        async function loadPyodideAndRun() {
+            if (!pyodide) {
+                pyodide = await loadPyodide();
+                await pyodide.loadPackage("micropip");
+            }
+        }
+
+        async function runCode() {
+            await loadPyodideAndRun();
+            const code = document.getElementById("code").value;
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "Running...";
+
+            try {
+                let result = await pyodide.runPythonAsync(code);
+                outputDiv.innerHTML = result ? result.toString() : "No output";
+            } catch (error) {
+                outputDiv.innerHTML = error.toString();
+            }
+        }
+    </script>
+</body>
+</html>
