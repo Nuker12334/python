@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fortnite Account Generator</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .credentials { margin-top: 20px; }
-        .account-details { margin-top: 20px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 800px; margin: 50px auto; padding: 20px; background: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; color: #333; }
+        button { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #007BFF; color: #fff; border: none; border-radius: 5px; }
+        .credentials, .account-details { margin: 20px 0; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; }
+        .credentials h2, .account-details h2 { margin-top: 0; }
     </style>
 </head>
 <body>
@@ -18,28 +20,6 @@
         <div class="credentials" id="credentials"></div>
         <div class="account-details" id="account-details"></div>
     </div>
-
-    <script>
-        document.getElementById('generate').addEventListener('click', async () => {
-            const response = await fetch('/generate-account');
-            const data = await response.json();
-
-            document.getElementById('credentials').innerHTML = `
-                <h2>Credentials</h2>
-                <p><strong>Email:</strong> ${data.email}</p>
-                <p><strong>Password:</strong> ${data.password}</p>
-            `;
-
-            document.getElementById('account-details').innerHTML = `
-                <h2>Fortnite Account Details</h2>
-                <p><strong>Skins:</strong> ${data.skins}</p>
-                <p><strong>V-Bucks:</strong> ${data.vbucks}</p>
-                <p><strong>Emotes:</strong> ${data.emotes}</p>
-                <p><strong>Pickaxes:</strong> ${data.pickaxes}</p>
-                <p><strong>Exclusive Items:</strong> ${data.exclusive_items}</p>
-            `;
-        });
-    </script>
 
     <script>
         async function generateEmail() {
@@ -59,25 +39,29 @@
         }
 
         async function getFortniteAccountDetails() {
-            // Replace with actual API call to fetch Fortnite account details
-            return {
-                skins: '5',
-                vbucks: '1000',
-                emotes: '3',
-                pickaxes: '2',
-                exclusive_items: 'Yes'
-            };
+            // Replace with actual API call to fetch Fortnite account details from a database of leaked accounts
+            const leakedAccounts = [
+                { email: "leaked1@example.com", password: "leakedpass1", fortniteEmail: "fortnite1@example.com", fortnitePassword: "fortnitepass1", skins: 5, vbucks: 1000, emotes: 3, pickaxes: 2, exclusive_items: "Yes" },
+                { email: "leaked2@example.com", password: "leakedpass2", fortniteEmail: "fortnite2@example.com", fortnitePassword: "fortnitepass2", skins: 7, vbucks: 1500, emotes: 4, pickaxes: 3, exclusive_items: "No" },
+                // Add more leaked accounts here
+            ];
+            const randomIndex = Math.floor(Math.random() * leakedAccounts.length);
+            return leakedAccounts[randomIndex];
         }
 
         async function handleGenerateAccount() {
-            const email = await generateEmail();
-            const password = await generatePassword();
             const accountDetails = await getFortniteAccountDetails();
 
             return {
-                email,
-                password,
-                ...accountDetails
+                email: accountDetails.email,
+                password: accountDetails.password,
+                fortniteEmail: accountDetails.fortniteEmail,
+                fortnitePassword: accountDetails.fortnitePassword,
+                skins: accountDetails.skins,
+                vbucks: accountDetails.vbucks,
+                emotes: accountDetails.emotes,
+                pickaxes: accountDetails.pickaxes,
+                exclusive_items: accountDetails.exclusive_items
             };
         }
 
@@ -88,6 +72,8 @@
                 <h2>Credentials</h2>
                 <p><strong>Email:</strong> ${data.email}</p>
                 <p><strong>Password:</strong> ${data.password}</p>
+                <p><strong>Fortnite Email:</strong> ${data.fortniteEmail}</p>
+                <p><strong>Fortnite Password:</strong> ${data.fortnitePassword}</p>
             `;
 
             document.getElementById('account-details').innerHTML = `
