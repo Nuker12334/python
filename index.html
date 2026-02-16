@@ -5,173 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fortnite Account Generator</title>
     <style>
-        /* CSS for styling the page */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-image: url('https://wallpaperaccess.com/full/1396510.jpg'); /* A generic Fortnite background */
-            background-size: cover;
-            background-position: center;
-        }
-
-        .container {
-            background-color: rgba(30, 30, 30, 0.85);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            color: #00d4ff;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            text-shadow: 0 0 10px #00d4ff;
-        }
-
-        .subtitle {
-            color: #b0b0b0;
-            margin-bottom: 30px;
-            font-size: 1em;
-        }
-
-        .generate-btn {
-            background-color: #00d4ff;
-            color: #1a1a1a;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            margin-bottom: 30px;
-        }
-
-        .generate-btn:hover {
-            background-color: #00a8cc;
-            transform: translateY(-2px);
-        }
-
-        .output-area {
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 20px;
-            min-height: 150px;
-            text-align: left;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 1em;
-            color: #e0e0e0;
-        }
-
-        .account-details {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed #555;
-        }
-
-        .account-details:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .label {
-            color: #00d4ff;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .credentials { margin-top: 20px; }
+        .account-details { margin-top: 20px; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Fortnite Account Generator</h1>
-        <p class="subtitle">Generate random account details instantly.</p>
-        
-        <button class="generate-btn" onclick="generateAccount()">Generate New Account</button>
-        
-        <div id="output" class="output-area">
-            Click the button to generate an account.
-        </div>
+        <button id="generate">Generate Account</button>
+        <div class="credentials" id="credentials"></div>
+        <div class="account-details" id="account-details"></div>
     </div>
 
     <script>
-        // JavaScript for the generation logic
+        document.getElementById('generate').addEventListener('click', async () => {
+            const response = await fetch('/generate-account');
+            const data = await response.json();
 
-        // List of random words to make usernames more unique
-        const randomWords = [
-            "Shadow", "Ghost", "Viper", "Storm", "Blade", "Phantom", "Reaper", "Wolf", "Frost", "Thunder",
-            "Ninja", "Skull", "Spectre", "Rogue", "Titan", "Glitch", "Havoc", "Slayer", "Vortex", "Cyber"
-        ];
+            document.getElementById('credentials').innerHTML = `
+                <h2>Credentials</h2>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Password:</strong> ${data.password}</p>
+            `;
 
-        // Function to generate a random string of characters
-        function generateRandomString(length) {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return result;
+            document.getElementById('account-details').innerHTML = `
+                <h2>Fortnite Account Details</h2>
+                <p><strong>Skins:</strong> ${data.skins}</p>
+                <p><strong>V-Bucks:</strong> ${data.vbucks}</p>
+                <p><strong>Emotes:</strong> ${data.emotes}</p>
+                <p><strong>Pickaxes:</strong> ${data.pickaxes}</p>
+                <p><strong>Exclusive Items:</strong> ${data.exclusive_items}</p>
+            `;
+        });
+    </script>
+
+    <script>
+        async function generateEmail() {
+            const domains = ["rambler.ru", "mail.rambler.ru"];
+            const username = Math.random().toString(36).substring(2, 10);
+            const domain = domains[Math.floor(Math.random() * domains.length)];
+            return `${username}@${domain}`;
         }
 
-        // Function to generate a random username
-        function generateUsername() {
-            const word1 = randomWords[Math.floor(Math.random() * randomWords.length)];
-            const word2 = randomWords[Math.floor(Math.random() * randomWords.length)];
-            const number = Math.floor(Math.random() * 9999);
-            return `${word1}${word2}${number}`;
-        }
-
-        // Function to generate a random email address using mail.rambler.ru
-        function generateEmail() {
-            const username = generateRandomString(12);
-            return `${username}@mail.rambler.ru`;
-        }
-
-        // Function to generate a random password
-        function generatePassword() {
-            // A mix of uppercase, lowercase, numbers, and symbols for a strong password
-            const allChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+        async function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
             let password = '';
-            for (let i = 0; i < 16; i++) {
-                password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             return password;
         }
 
-        // Main function to generate the full account and display it
-        function generateAccount() {
-            const outputDiv = document.getElementById('output');
-            
-            const newUsername = generateUsername();
-            const newEmail = generateEmail();
-            const newPassword = generatePassword();
+        async function getFortniteAccountDetails() {
+            // Replace with actual API call to fetch Fortnite account details
+            return {
+                skins: '5',
+                vbucks: '1000',
+                emotes: '3',
+                pickaxes: '2',
+                exclusive_items: 'Yes'
+            };
+        }
 
-            const accountDetails = `
-<div class="account-details">
-    <span class="label">Email:</span> ${newEmail}<br>
-    <span class="label">Username:</span> ${newUsername}<br>
-    <span class="label">Password:</span> ${newPassword}
-</div>
+        async function handleGenerateAccount() {
+            const email = await generateEmail();
+            const password = await generatePassword();
+            const accountDetails = await getFortniteAccountDetails();
+
+            return {
+                email,
+                password,
+                ...accountDetails
+            };
+        }
+
+        document.getElementById('generate').addEventListener('click', async () => {
+            const data = await handleGenerateAccount();
+
+            document.getElementById('credentials').innerHTML = `
+                <h2>Credentials</h2>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Password:</strong> ${data.password}</p>
             `;
 
-            // Append the new account to the output area
-            outputDiv.innerHTML = accountDetails + outputDiv.innerHTML;
-        }
+            document.getElementById('account-details').innerHTML = `
+                <h2>Fortnite Account Details</h2>
+                <p><strong>Skins:</strong> ${data.skins}</p>
+                <p><strong>V-Bucks:</strong> ${data.vbucks}</p>
+                <p><strong>Emotes:</strong> ${data.emotes}</p>
+                <p><strong>Pickaxes:</strong> ${data.pickaxes}</p>
+                <p><strong>Exclusive Items:</strong> ${data.exclusive_items}</p>
+            `;
+        });
     </script>
-
 </body>
 </html>
