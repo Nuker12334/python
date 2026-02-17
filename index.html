@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortnite Account Manager Pro</title>
+    <title>Fortnite Account Generator</title>
+    <title> Fortniteshop.gg</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -47,6 +48,41 @@
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .toolbar-btn.primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+        }
+
+        .toolbar-btn.primary:hover {
+            background: linear-gradient(45deg, #ee5a24, #ff6b6b);
         }
 
         .stats-bar {
@@ -159,19 +195,27 @@
             word-break: break-all;
         }
 
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        .account-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
             border: none;
             border-radius: 10px;
             color: white;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
         }
 
         .login-btn:hover {
@@ -179,100 +223,64 @@
             box-shadow: 0 10px 20px rgba(238,90,36,0.4);
         }
 
-        .login-btn:active {
-            transform: scale(0.98);
+        .copy-btn {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
         }
 
-        .floating-particles {
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(79,172,254,0.4);
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #eb3b5a, #fc5c65);
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(235,59,90,0.4);
+        }
+
+        .modal {
+            display: none;
             position: fixed;
-            top: 0;
+            z-index: 1000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: -1;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
         }
 
-        .particle {
-            position: absolute;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            animation: float 20s infinite;
+        .modal-content {
+            background: linear-gradient(135deg, rgba(102,126,234,0.9), rgba(118,75,162,0.9));
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.3s ease;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            opacity: 0.7;
-            font-size: 0.9rem;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .accounts-grid { grid-template-columns: 1fr; }
-            .container { padding: 10px; }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
-    </style>
-</head>
-<body>
-    <div class="floating-particles" id="particles"></div>
-    
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-gamepad"></i> Fortnite Account Manager Pro</h1>
-            <p class="subtitle">Professional Account Management Tool</p>
-        </header>
 
-        <div class="stats-bar">
-            <div class="stat-item">
-                <i class="fas fa-users"></i> Total Accounts: <span id="totalAccounts">7</span>
-            </div>
-            <div class="stat-item">
-                <i class="fas fa-tshirt"></i> Total Skins: <span id="totalSkins">7</span>
-            </div>
-            <div class="stat-item">
-                <i class="fas fa-coins"></i> Total V-Bucks: <span id="totalVbucks">0</span>
-            </div>
-        </div>
-
-        <div class="accounts-grid" id="accountsGrid">
-            <!-- Account cards will be generated here -->
-        </div>
-
-        <footer class="footer">
-            <p>&copy; 2026 Fortnite Account Manager Pro | Advanced Account Management Solution</p>
-        </footer>
-    </div>
-
-    <script>
-        const accounts = [
-            {
-                displayName: "DarkKnight FN",
-                email: "dollfnbby@hotmail.com",
-                password: "Kizmo1128\$",
-                skins: 1,
-                vbucks: 0,
-                epicEmail: "dollfnbby@hotmail.com",
-                stw: false,
-                lastPlayed: "N/A"
-            },
-            {
-                displayName: "M4nO XD",
-                email: "gogama59@hotmail.com",
-                password: "adidas804",
-                skins: 1,
-                vbucks: 0,
-                epicEmail: "gogama59@hotmail.com",
-                stw: false,
-                lastPlayed: "N/A"
-            },
-            {
-                displayName: "AliOnurŞatır2134",
-                email: "ertans
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer
