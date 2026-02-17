@@ -3,88 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortnite Account Generator</title>
+    <title>Fortnite Account Manager Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-        .container { max-width: 800px; margin: 50px auto; padding: 20px; background: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-        h1 { text-align: center; color: #333; }
-        button { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #007BFF; color: #fff; border: none; border-radius: 5px; }
-        .credentials, .account-details { margin: 20px 0; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; }
-        .credentials h2, .account-details h2 { margin-top: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073; }
+            to { text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .account-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .account-card:hover::before {
+            animation: shine 0.5s ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .account-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .account-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .account-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: rgba(0,255,0,0.2);
+            border: 1px solid rgba(0,255,0,0.5);
+        }
+
+        .account-info {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .info-label {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(238,90,36,0.4);
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .accounts-grid { grid-template-columns: 1fr; }
+            .container { padding: 10px; }
+        }
     </style>
 </head>
 <body>
+    <div class="floating-particles" id="particles"></div>
+    
     <div class="container">
-        <h1>Fortnite Account Generator</h1>
-        <button id="generate">Generate Account</button>
-        <div class="credentials" id="credentials"></div>
-        <div class="account-details" id="account-details"></div>
+        <header>
+            <h1><i class="fas fa-gamepad"></i> Fortnite Account Manager Pro</h1>
+            <p class="subtitle">Professional Account Management Tool</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <i class="fas fa-users"></i> Total Accounts: <span id="totalAccounts">7</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-tshirt"></i> Total Skins: <span id="totalSkins">7</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-coins"></i> Total V-Bucks: <span id="totalVbucks">0</span>
+            </div>
+        </div>
+
+        <div class="accounts-grid" id="accountsGrid">
+            <!-- Account cards will be generated here -->
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2026 Fortnite Account Manager Pro | Advanced Account Management Solution</p>
+        </footer>
     </div>
 
     <script>
-        async function generateEmail() {
-            const domains = ["rambler.ru", "mail.rambler.ru"];
-            const username = Math.random().toString(36).substring(2, 10);
-            const domain = domains[Math.floor(Math.random() * domains.length)];
-            return `${username}@${domain}`;
-        }
-
-        async function generatePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-            let password = '';
-            for (let i = 0; i < 12; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return password;
-        }
-
-        async function getFortniteAccountDetails() {
-            // Replace with actual API call to fetch Fortnite account details from a database of leaked accounts
-            const leakedAccounts = [
-                { email: "leaked1@example.com", password: "leakedpass1", fortniteEmail: "fortnite1@example.com", fortnitePassword: "fortnitepass1", skins: 5, vbucks: 1000, emotes: 3, pickaxes: 2, exclusive_items: "Yes" },
-                { email: "leaked2@example.com", password: "leakedpass2", fortniteEmail: "fortnite2@example.com", fortnitePassword: "fortnitepass2", skins: 7, vbucks: 1500, emotes: 4, pickaxes: 3, exclusive_items: "No" },
-                // Add more leaked accounts here
-            ];
-            const randomIndex = Math.floor(Math.random() * leakedAccounts.length);
-            return leakedAccounts[randomIndex];
-        }
-
-        async function handleGenerateAccount() {
-            const accountDetails = await getFortniteAccountDetails();
-
-            return {
-                email: accountDetails.email,
-                password: accountDetails.password,
-                fortniteEmail: accountDetails.fortniteEmail,
-                fortnitePassword: accountDetails.fortnitePassword,
-                skins: accountDetails.skins,
-                vbucks: accountDetails.vbucks,
-                emotes: accountDetails.emotes,
-                pickaxes: accountDetails.pickaxes,
-                exclusive_items: accountDetails.exclusive_items
-            };
-        }
-
-        document.getElementById('generate').addEventListener('click', async () => {
-            const data = await handleGenerateAccount();
-
-            document.getElementById('credentials').innerHTML = `
-                <h2>Credentials</h2>
-                <p><strong>Email:</strong> ${data.email}</p>
-                <p><strong>Password:</strong> ${data.password}</p>
-                <p><strong>Fortnite Email:</strong> ${data.fortniteEmail}</p>
-                <p><strong>Fortnite Password:</strong> ${data.fortnitePassword}</p>
-            `;
-
-            document.getElementById('account-details').innerHTML = `
-                <h2>Fortnite Account Details</h2>
-                <p><strong>Skins:</strong> ${data.skins}</p>
-                <p><strong>V-Bucks:</strong> ${data.vbucks}</p>
-                <p><strong>Emotes:</strong> ${data.emotes}</p>
-                <p><strong>Pickaxes:</strong> ${data.pickaxes}</p>
-                <p><strong>Exclusive Items:</strong> ${data.exclusive_items}</p>
-            `;
-        });
-    </script>
-</body>
-</html>
+        const accounts = [
+            {
+                displayName: "DarkKnight FN",
+                email: "dollfnbby@hotmail.com",
+                password: "Kizmo1128\$",
+                skins: 1,
+                vbucks: 0,
+                epicEmail: "dollfnbby@hotmail.com",
+                stw: false,
+                lastPlayed: "N/A"
+            },
+            {
+                displayName: "M4nO XD",
+                email: "gogama59@hotmail.com",
+                password: "adidas804",
+                skins: 1,
+                vbucks: 0,
+                epicEmail: "gogama59@hotmail.com",
+                stw: false,
+                lastPlayed: "N/A"
+            },
+            {
+                displayName: "AliOnurŞatır2134",
+                email: "ert
