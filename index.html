@@ -17,7 +17,7 @@
             color: #1e293b;
         }
 
-        /* Navigation Bar - azgames.io style */
+        /* Navigation Bar */
         .navbar {
             background: white;
             padding: 1rem 2rem;
@@ -101,7 +101,7 @@
             padding: 2rem;
         }
 
-        /* Hero Section - azgames.io style */
+        /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             border-radius: 20px;
@@ -151,7 +151,7 @@
             filter: drop-shadow(0 20px 25px -5px rgba(0,0,0,0.3));
         }
 
-        /* Category Pills - azgames.io style */
+        /* Category Pills */
         .categories {
             display: flex;
             gap: 1rem;
@@ -185,7 +185,7 @@
             border-color: transparent;
         }
 
-        /* Featured Section */
+        /* Section Title */
         .section-title {
             display: flex;
             justify-content: space-between;
@@ -205,7 +205,7 @@
             font-weight: 500;
         }
 
-        /* Games Grid - azgames.io style */
+        /* Games Grid */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -279,19 +279,7 @@
             color: #64748b;
         }
 
-        /* Featured Card - larger size */
-        .game-card.featured {
-            grid-column: span 2;
-            display: flex;
-        }
-
-        .game-card.featured .game-thumbnail {
-            height: auto;
-            width: 120px;
-            font-size: 2.5rem;
-        }
-
-        /* Modal - azgames.io style */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -411,13 +399,6 @@
             transform: scale(1.05);
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #64748b;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .navbar {
@@ -449,6 +430,13 @@
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
         }
+
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            color: #ef4444;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -474,10 +462,10 @@
         <div class="hero">
             <div class="hero-content">
                 <h1>Play Free Games Online</h1>
-                <p>Access 1500+ HTML5 and WebGL games directly in your browser. No downloads, no hassle.</p>
+                <p>Access hundreds of HTML5 games directly in your browser. No downloads, no hassle.</p>
                 <div class="stats">
                     <div class="stat">
-                        <div class="stat-number">1500+</div>
+                        <div class="stat-number">200+</div>
                         <div class="stat-label">Games</div>
                     </div>
                     <div class="stat">
@@ -513,13 +501,6 @@
         </div>
         <div id="featuredGames" class="games-grid"></div>
 
-        <!-- Popular Games -->
-        <div class="section-title">
-            <h2>📈 Most Popular</h2>
-            <a href="#">View All →</a>
-        </div>
-        <div id="popularGames" class="games-grid"></div>
-
         <!-- All Games -->
         <div class="section-title">
             <h2>🎯 All Games</h2>
@@ -527,10 +508,15 @@
         </div>
         <div id="allGames" class="games-grid"></div>
 
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message">
+            ⚠️ If games don't load, try refreshing or check your internet connection.
+        </div>
+
         <!-- Footer -->
         <div class="footer">
             <p>Join our community for new games and updates!</p>
-            <a href="https://discord.gg/thegamecompilation" target="_blank" class="discord-link">
+            <a href="#" class="discord-link">
                 Join Discord 🎮
             </a>
             <p style="margin-top: 1rem; font-size: 0.9rem;">
@@ -551,74 +537,64 @@
                 </div>
             </div>
             <div class="game-frame-container">
-                <iframe id="gameFrame" src="" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <iframe id="gameFrame" src="" allowfullscreen allow="autoplay; fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
             </div>
         </div>
     </div>
 
     <script>
-        // Games from thegamecompilation.com
+        // Games with working URLs
         const games = [
-            // Featured/Popular
-            { name: "1v1.LOL", icon: "⚔️", category: "action", url: "https://thegamecompilation.com/1v1-lol", description: "Building battle royale", popular: true, featured: true },
-            { name: "Among Us", icon: "👾", category: "multiplayer", url: "https://thegamecompilation.com/among-us", description: "Social deduction game", popular: true, featured: true },
-            { name: "Retro Bowl", icon: "🏈", category: "sports", url: "https://thegamecompilation.com/retro-bowl", description: "Football management", popular: true, featured: true },
-            { name: "Shell Shockers", icon: "🥚", category: "action", url: "https://thegamecompilation.com/shell-shockers", description: "Egg FPS game", popular: true },
-            { name: "Krunker.io", icon: "🔫", category: "io", url: "https://thegamecompilation.com/krunker-io", description: "Fast-paced FPS", popular: true },
-            { name: "Paper.io", icon: "📄", category: "io", url: "https://thegamecompilation.com/paper-io", description: "Territory control", popular: true },
+            // Featured Games
+            { name: "1v1.LOL", icon: "⚔️", category: "action", url: "https://1v1.lol/", description: "Building battle royale", featured: true },
+            { name: "Among Us", icon: "👾", category: "multiplayer", url: "https://among-us.io/", description: "Social deduction game", featured: true },
+            { name: "Retro Bowl", icon: "🏈", category: "sports", url: "https://retrobowl.me/", description: "Football management", featured: true },
+            { name: "Shell Shockers", icon: "🥚", category: "action", url: "https://shellshock.io/", description: "Egg FPS game", featured: true },
             
             // Action Games
-            { name: "Zombs Royale", icon: "🧟", category: "action", url: "https://thegamecompilation.com/zombs-royale", description: "Zombie battle royale" },
-            { name: "Bullet Force", icon: "💥", category: "action", url: "https://thegamecompilation.com/bullet-force", description: "Multiplayer FPS" },
-            { name: "Venge.io", icon: "⚡", category: "action", url: "https://thegamecompilation.com/venge-io", description: "Competitive shooter" },
-            { name: "Smash Karts", icon: "🏎️", category: "action", url: "https://thegamecompilation.com/smash-karts", description: "Kart battle" },
+            { name: "Krunker.io", icon: "🔫", category: "io", url: "https://krunker.io/", description: "Fast-paced FPS" },
+            { name: "Zombs Royale", icon: "🧟", category: "action", url: "https://zombsroyale.io/", description: "Zombie battle royale" },
+            { name: "Smash Karts", icon: "🏎️", category: "action", url: "https://smashkarts.io/", description: "Kart battle" },
+            { name: "Mope.io", icon: "🐉", category: "io", url: "https://mope.io/", description: "Eat & evolve" },
             
             // Sports Games
-            { name: "Basketball Stars", icon: "🏀", category: "sports", url: "https://thegamecompilation.com/basketball-stars", description: "1v1 basketball" },
-            { name: "Soccer Random", icon: "⚽", category: "sports", url: "https://thegamecompilation.com/soccer-random", description: "Chaotic soccer" },
-            { name: "8 Ball Pool", icon: "🎱", category: "sports", url: "https://thegamecompilation.com/8-ball-pool", description: "Classic pool" },
-            { name: "Drift Hunters", icon: "🏎️", category: "sports", url: "https://thegamecompilation.com/drift-hunters", description: "Car drifting" },
+            { name: "Basketball Stars", icon: "🏀", category: "sports", url: "https://basketball-stars.io/", description: "1v1 basketball" },
+            { name: "8 Ball Pool", icon: "🎱", category: "sports", url: "https://8ball-pool.io/", description: "Classic pool" },
+            { name: "Football Legends", icon: "⚽", category: "sports", url: "https://football-legends.io/", description: "Soccer game" },
             
             // Puzzle Games
-            { name: "2048", icon: "🎯", category: "puzzle", url: "https://thegamecompilation.com/2048", description: "Merge numbers" },
-            { name: "Run 3", icon: "🏃", category: "puzzle", url: "https://thegamecompilation.com/run-3", description: "Endless runner" },
-            { name: "Wordle", icon: "📝", category: "puzzle", url: "https://thegamecompilation.com/wordle", description: "Word game" },
-            { name: "Cookie Clicker", icon: "🍪", category: "puzzle", url: "https://thegamecompilation.com/cookie-clicker", description: "Idle clicker" },
+            { name: "2048", icon: "🎯", category: "puzzle", url: "https://play2048.co/", description: "Merge numbers" },
+            { name: "Run 3", icon: "🏃", category: "puzzle", url: "https://run-3.io/", description: "Endless runner" },
+            { name: "Wordle", icon: "📝", category: "puzzle", url: "https://www.nytimes.com/games/wordle/index.html", description: "Word game" },
             
             // Strategy Games
-            { name: "Bloons TD 5", icon: "🎈", category: "strategy", url: "https://thegamecompilation.com/bloons-td-5", description: "Tower defense" },
-            { name: "Chess", icon: "♟️", category: "strategy", url: "https://thegamecompilation.com/chess", description: "Classic chess" },
-            { name: "Age of War", icon: "🏹", category: "strategy", url: "https://thegamecompilation.com/age-of-war", description: "Tower defense" },
-            { name: "Mope.io", icon: "🐉", category: "io", url: "https://thegamecompilation.com/mope-io", description: "Eat & evolve" },
+            { name: "Bloons TD 5", icon: "🎈", category: "strategy", url: "https://bloonstd5.io/", description: "Tower defense" },
+            { name: "Chess", icon: "♟️", category: "strategy", url: "https://www.chess.com/play/computer", description: "Classic chess" },
             
             // More .io Games
-            { name: "Slope", icon: "📐", category: "io", url: "https://thegamecompilation.com/slope", description: "3D rolling ball" },
-            { name: "Tunnel Rush", icon: "🌀", category: "action", url: "https://thegamecompilation.com/tunnel-rush", description: "Fast tunnel game" },
-            { name: "Minecraft Classic", icon: "⛏️", category: "strategy", url: "https://thegamecompilation.com/minecraft-classic", description: "Classic building" },
-            { name: "Stumble Guys", icon: "🎮", category: "multiplayer", url: "https://thegamecompilation.com/stumble-guys", description: "Party elimination" }
+            { name: "Slope", icon: "📐", category: "io", url: "https://slope-game.io/", description: "3D rolling ball" },
+            { name: "Paper.io", icon: "📄", category: "io", url: "https://paper-io.com/", description: "Territory control" },
+            { name: "Tunnel Rush", icon: "🌀", category: "action", url: "https://tunnelrush.io/", description: "Fast tunnel game" },
+            { name: "Stumble Guys", icon: "🎮", category: "multiplayer", url: "https://stumble-guys.io/", description: "Party elimination" }
         ];
 
-        // Display games in different sections
+        // Display games
         function displayGames() {
             // Featured games
             const featured = games.filter(g => g.featured);
-            displayGamesInContainer(featured, 'featuredGames', true);
-            
-            // Popular games
-            const popular = games.filter(g => g.popular);
-            displayGamesInContainer(popular, 'popularGames');
+            displayGamesInContainer(featured, 'featuredGames');
             
             // All games
             displayGamesInContainer(games, 'allGames');
         }
 
-        function displayGamesInContainer(gamesList, containerId, isFeatured = false) {
+        function displayGamesInContainer(gamesList, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
             gamesList.forEach(game => {
                 const card = document.createElement('div');
-                card.className = `game-card ${isFeatured ? 'featured' : ''}`;
+                card.className = 'game-card';
                 card.onclick = () => playGame(game.name, game.url);
                 
                 card.innerHTML = `
@@ -673,14 +649,21 @@
         // Play game
         function playGame(gameName, gameUrl) {
             document.getElementById('currentGameTitle').textContent = `Playing: ${gameName}`;
-            document.getElementById('gameFrame').src = gameUrl;
+            const gameFrame = document.getElementById('gameFrame');
+            gameFrame.src = gameUrl;
             document.getElementById('gameModal').style.display = 'block';
+            
+            // Show error message if game doesn't load
+            gameFrame.onerror = function() {
+                document.getElementById('errorMessage').style.display = 'block';
+            };
         }
 
         // Close game
         function closeGame() {
             document.getElementById('gameModal').style.display = 'none';
             document.getElementById('gameFrame').src = '';
+            document.getElementById('errorMessage').style.display = 'none';
         }
 
         // Toggle fullscreen
