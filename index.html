@@ -3,368 +3,722 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Game Hub</title>
+    <title>Game Hub | Play Free Games</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
+            background: #f8fafc;
+            color: #1e293b;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+
+        /* Navigation Bar - azgames.io style */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        h1 {
-            color: #333;
-            font-size: 2.5em;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto;
+
+        .logo span {
+            font-size: 2rem;
         }
-        
-        .search-box {
+
+        .nav-links {
             display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 1rem;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+
+        .search-bar {
+            background: #f1f5f9;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
             gap: 10px;
-            margin-top: 20px;
+            border: 1px solid #e2e8f0;
         }
-        
-        #searchInput {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 30px;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
+
+        .search-bar input {
+            background: transparent;
+            border: none;
             outline: none;
+            width: 200px;
+            font-size: 0.95rem;
+            color: #1e293b;
         }
-        
-        #searchInput:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+
+        .search-bar input::placeholder {
+            color: #94a3b8;
         }
-        
-        #searchButton {
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
+
+        .search-bar button {
+            background: transparent;
             border: none;
-            border-radius: 30px;
-            font-size: 1.1em;
+            color: #64748b;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.1rem;
         }
-        
-        #searchButton:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-        
-        .nav-tabs {
+
+        /* Hero Section - azgames.io style */
+        .hero {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            color: white;
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 30px 0 20px;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
         }
-        
-        .tab {
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
         }
-        
-        .tab:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+
+        .hero-content p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
         }
-        
-        .tab.active {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+
+        .stats {
+            display: flex;
+            gap: 2rem;
         }
-        
-        .content-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            min-height: 500px;
-        }
-        
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            padding: 20px 0;
-        }
-        
-        .game-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 25px;
-            border-radius: 15px;
-            color: white;
+
+        .stat {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        .game-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
         }
-        
-        .game-card h3 {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-        }
-        
-        .game-card p {
-            font-size: 0.9em;
+
+        .stat-label {
+            font-size: 0.9rem;
             opacity: 0.9;
         }
-        
-        .featured-section {
-            margin-top: 40px;
+
+        .hero-image {
+            font-size: 6rem;
+            filter: drop-shadow(0 20px 25px -5px rgba(0,0,0,0.3));
         }
-        
-        .featured-title {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
+
+        /* Category Pills - azgames.io style */
+        .categories {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            justify-content: center;
         }
-        
-        iframe {
+
+        .category-pill {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .category-pill:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+        }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Featured Section */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0 1.5rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .section-title a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Games Grid - azgames.io style */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(0,0,0,0.04);
+            border-color: #3b82f6;
+        }
+
+        .game-thumbnail {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .game-thumbnail::after {
+            content: '▶';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.9);
+            color: #3b82f6;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover .game-thumbnail::after {
+            opacity: 1;
+        }
+
+        .game-info {
+            padding: 1rem;
+        }
+
+        .game-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: #1e293b;
+        }
+
+        .game-category {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Featured Card - larger size */
+        .game-card.featured {
+            grid-column: span 2;
+            display: flex;
+        }
+
+        .game-card.featured .game-thumbnail {
+            height: auto;
+            width: 120px;
+            font-size: 2.5rem;
+        }
+
+        /* Modal - azgames.io style */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 600px;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.2rem;
+        }
+
+        .modal-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 30px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .modal-btn:hover {
+            background: #f1f5f9;
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .modal-btn.fullscreen {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
             border: none;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
-        
-        .search-result {
-            margin-top: 20px;
+
+        .modal-btn.fullscreen:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
         }
-        
+
+        .game-frame-container {
+            flex: 1;
+            position: relative;
+            background: #0f172a;
+        }
+
+        #gameFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ef4444;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .discord-link {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .discord-link:hover {
+            transform: scale(1.05);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .search-box {
+            .navbar {
                 flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
             }
             
-            #searchButton {
-                width: 100%;
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                justify-content: center;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <span>🎮</span> GAMEHUB
+        </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">New</a>
+            <a href="#">Popular</a>
+            <a href="#">Categories</a>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search games...">
+                <button onclick="searchGames()">🔍</button>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <header>
-            <h1>🎮 Educational Game Hub</h1>
-            
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search for educational games...">
-                    <button id="searchButton" onclick="performSearch()">🔍 Search</button>
-                </div>
-            </div>
-            
-            <div class="nav-tabs">
-                <button class="tab active" onclick="switchTab('games')">Games</button>
-                <button class="tab" onclick="switchTab('featured')">Featured</button>
-                <button class="tab" onclick="switchTab('about')">About</button>
-            </div>
-        </header>
-        
-        <!-- Games Tab Content -->
-        <div id="gamesTab" class="content-section">
-            <h2 style="color: #333; margin-bottom: 20px;">Popular Educational Games</h2>
-            <div class="games-grid">
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-2048')">
-                    <h3>🎯 2048</h3>
-                    <p>Math puzzle game</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-run-3')">
-                    <h3>🏃 Run 3</h3>
-                    <p>Endless runner</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-papas-pizzeria')">
-                    <h3>🍕 Papa's Pizzeria</h3>
-                    <p>Time management</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-bloons-tower-defense-5')">
-                    <h3>🎈 Bloons TD 5</h3>
-                    <p>Tower defense</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-fireboy-and-watergirl-1-forest-temple')">
-                    <h3>🔥💧 Fireboy & Watergirl</h3>
-                    <p>Puzzle platformer</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-chess')">
-                    <h3>♟️ Chess</h3>
-                    <p>Strategy game</p>
-                </div>
-            </div>
-            
-            <div class="featured-section">
-                <h2 class="featured-title">From The Game Compilation</h2>
-                <div class="games-grid">
-                    <div class="game-card" onclick="loadGame('https://sites.google.com/site/thegamecompilation/home/1v1-lol')">
-                        <h3>⚔️ 1v1.LOL</h3>
-                        <p>Building battle royale</p>
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Play Free Games Online</h1>
+                <p>Access 1500+ HTML5 and WebGL games directly in your browser. No downloads, no hassle.</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">1500+</div>
+                        <div class="stat-label">Games</div>
                     </div>
-                    <div class="game-card" onclick="loadGame('https://sites.google.com/site/thegamecompilation/home/among-us')">
-                        <h3>👾 Among Us</h3>
-                        <p>Social deduction</p>
+                    <div class="stat">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Daily Players</div>
                     </div>
-                    <div class="game-card" onclick="loadGame('https://sites.google.com/site/thegamecompilation/home/retro-bowl')">
-                        <h3>🏈 Retro Bowl</h3>
-                        <p>Football management</p>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Uptime</div>
                     </div>
                 </div>
+            </div>
+            <div class="hero-image">
+                🎮
             </div>
         </div>
-        
-        <!-- Featured Tab Content (initially hidden) -->
-        <div id="featuredTab" class="content-section" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Game of the Week</h2>
-            <div style="text-align: center;">
-                <div class="game-card" style="max-width: 400px; margin: 0 auto;" onclick="loadGame('https://www.coolmathgames.com/0-papas-bakeria')">
-                    <h3>🥧 Papa's Bakeria</h3>
-                    <p>New game! Bake and serve delicious pies</p>
-                </div>
-            </div>
-            
-            <h2 style="color: #333; margin: 40px 0 20px;">Most Played This Month</h2>
-            <div class="games-grid">
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-snake')">
-                    <h3>🐍 Snake</h3>
-                    <p>Classic arcade game</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-pacman')">
-                    <h3>👻 Pac-Man</h3>
-                    <p>Maze chase classic</p>
-                </div>
-                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-tetris')">
-                    <h3>🧩 Tetris</h3>
-                    <p>Block stacking puzzle</p>
-                </div>
-            </div>
+
+        <!-- Categories -->
+        <div class="categories">
+            <button class="category-pill active" onclick="filterGames('all')">All Games</button>
+            <button class="category-pill" onclick="filterGames('action')">Action</button>
+            <button class="category-pill" onclick="filterGames('sports')">Sports</button>
+            <button class="category-pill" onclick="filterGames('puzzle')">Puzzle</button>
+            <button class="category-pill" onclick="filterGames('strategy')">Strategy</button>
+            <button class="category-pill" onclick="filterGames('multiplayer')">Multiplayer</button>
+            <button class="category-pill" onclick="filterGames('io')">.io Games</button>
         </div>
-        
-        <!-- About Tab Content (initially hidden) -->
-        <div id="aboutTab" class="content-section" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">About Educational Game Hub</h2>
-            <div style="color: #555; line-height: 1.8; font-size: 1.1em;">
-                <p style="margin-bottom: 15px;">Welcome to Educational Game Hub! This website provides a collection of educational and fun games that can help develop critical thinking, problem-solving, and strategic planning skills.</p>
-                
-                <p style="margin-bottom: 15px;">All games featured here are appropriate for school settings and can be used during free time or as part of educational activities. The games help with:</p>
-                
-                <ul style="margin-left: 30px; margin-bottom: 20px;">
-                    <li>Mathematical thinking and logic</li>
-                    <li>Strategic planning and resource management</li>
-                    <li>Hand-eye coordination and reaction time</li>
-                    <li>Problem-solving and critical thinking</li>
-                </ul>
-                
-                <p>Please check with your teacher or school administrator to ensure you're using games during appropriate times and in accordance with school policies.</p>
+
+        <!-- Featured Games -->
+        <div class="section-title">
+            <h2>🔥 Featured Games</h2>
+            <a href="#">View All →</a>
+        </div>
+        <div id="featuredGames" class="games-grid"></div>
+
+        <!-- Popular Games -->
+        <div class="section-title">
+            <h2>📈 Most Popular</h2>
+            <a href="#">View All →</a>
+        </div>
+        <div id="popularGames" class="games-grid"></div>
+
+        <!-- All Games -->
+        <div class="section-title">
+            <h2>🎯 All Games</h2>
+            <a href="#" onclick="filterGames('all')">View All →</a>
+        </div>
+        <div id="allGames" class="games-grid"></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Join our community for new games and updates!</p>
+            <a href="https://discord.gg/thegamecompilation" target="_blank" class="discord-link">
+                Join Discord 🎮
+            </a>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                © 2024 GameHub - Free Online Games
+            </p>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="currentGameTitle">Loading...</span>
+                <div class="modal-controls">
+                    <button class="modal-btn" onclick="refreshGame()">🔄 Refresh</button>
+                    <button class="modal-btn fullscreen" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                    <button class="close-btn" onclick="closeGame()">✕</button>
+                </div>
+            </div>
+            <div class="game-frame-container">
+                <iframe id="gameFrame" src="" allowfullscreen allow="autoplay; fullscreen"></iframe>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.getElementById('gamesTab').style.display = 'none';
-            document.getElementById('featuredTab').style.display = 'none';
-            document.getElementById('aboutTab').style.display = 'none';
+        // Games from thegamecompilation.com
+        const games = [
+            // Featured/Popular
+            { name: "1v1.LOL", icon: "⚔️", category: "action", url: "https://thegamecompilation.com/1v1-lol", description: "Building battle royale", popular: true, featured: true },
+            { name: "Among Us", icon: "👾", category: "multiplayer", url: "https://thegamecompilation.com/among-us", description: "Social deduction game", popular: true, featured: true },
+            { name: "Retro Bowl", icon: "🏈", category: "sports", url: "https://thegamecompilation.com/retro-bowl", description: "Football management", popular: true, featured: true },
+            { name: "Shell Shockers", icon: "🥚", category: "action", url: "https://thegamecompilation.com/shell-shockers", description: "Egg FPS game", popular: true },
+            { name: "Krunker.io", icon: "🔫", category: "io", url: "https://thegamecompilation.com/krunker-io", description: "Fast-paced FPS", popular: true },
+            { name: "Paper.io", icon: "📄", category: "io", url: "https://thegamecompilation.com/paper-io", description: "Territory control", popular: true },
             
-            // Show selected tab
-            document.getElementById(tabName + 'Tab').style.display = 'block';
+            // Action Games
+            { name: "Zombs Royale", icon: "🧟", category: "action", url: "https://thegamecompilation.com/zombs-royale", description: "Zombie battle royale" },
+            { name: "Bullet Force", icon: "💥", category: "action", url: "https://thegamecompilation.com/bullet-force", description: "Multiplayer FPS" },
+            { name: "Venge.io", icon: "⚡", category: "action", url: "https://thegamecompilation.com/venge-io", description: "Competitive shooter" },
+            { name: "Smash Karts", icon: "🏎️", category: "action", url: "https://thegamecompilation.com/smash-karts", description: "Kart battle" },
             
-            // Update active tab styling
-            let tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
+            // Sports Games
+            { name: "Basketball Stars", icon: "🏀", category: "sports", url: "https://thegamecompilation.com/basketball-stars", description: "1v1 basketball" },
+            { name: "Soccer Random", icon: "⚽", category: "sports", url: "https://thegamecompilation.com/soccer-random", description: "Chaotic soccer" },
+            { name: "8 Ball Pool", icon: "🎱", category: "sports", url: "https://thegamecompilation.com/8-ball-pool", description: "Classic pool" },
+            { name: "Drift Hunters", icon: "🏎️", category: "sports", url: "https://thegamecompilation.com/drift-hunters", description: "Car drifting" },
+            
+            // Puzzle Games
+            { name: "2048", icon: "🎯", category: "puzzle", url: "https://thegamecompilation.com/2048", description: "Merge numbers" },
+            { name: "Run 3", icon: "🏃", category: "puzzle", url: "https://thegamecompilation.com/run-3", description: "Endless runner" },
+            { name: "Wordle", icon: "📝", category: "puzzle", url: "https://thegamecompilation.com/wordle", description: "Word game" },
+            { name: "Cookie Clicker", icon: "🍪", category: "puzzle", url: "https://thegamecompilation.com/cookie-clicker", description: "Idle clicker" },
+            
+            // Strategy Games
+            { name: "Bloons TD 5", icon: "🎈", category: "strategy", url: "https://thegamecompilation.com/bloons-td-5", description: "Tower defense" },
+            { name: "Chess", icon: "♟️", category: "strategy", url: "https://thegamecompilation.com/chess", description: "Classic chess" },
+            { name: "Age of War", icon: "🏹", category: "strategy", url: "https://thegamecompilation.com/age-of-war", description: "Tower defense" },
+            { name: "Mope.io", icon: "🐉", category: "io", url: "https://thegamecompilation.com/mope-io", description: "Eat & evolve" },
+            
+            // More .io Games
+            { name: "Slope", icon: "📐", category: "io", url: "https://thegamecompilation.com/slope", description: "3D rolling ball" },
+            { name: "Tunnel Rush", icon: "🌀", category: "action", url: "https://thegamecompilation.com/tunnel-rush", description: "Fast tunnel game" },
+            { name: "Minecraft Classic", icon: "⛏️", category: "strategy", url: "https://thegamecompilation.com/minecraft-classic", description: "Classic building" },
+            { name: "Stumble Guys", icon: "🎮", category: "multiplayer", url: "https://thegamecompilation.com/stumble-guys", description: "Party elimination" }
+        ];
+
+        // Display games in different sections
+        function displayGames() {
+            // Featured games
+            const featured = games.filter(g => g.featured);
+            displayGamesInContainer(featured, 'featuredGames', true);
+            
+            // Popular games
+            const popular = games.filter(g => g.popular);
+            displayGamesInContainer(popular, 'popularGames');
+            
+            // All games
+            displayGamesInContainer(games, 'allGames');
+        }
+
+        function displayGamesInContainer(gamesList, containerId, isFeatured = false) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            gamesList.forEach(game => {
+                const card = document.createElement('div');
+                card.className = `game-card ${isFeatured ? 'featured' : ''}`;
+                card.onclick = () => playGame(game.name, game.url);
+                
+                card.innerHTML = `
+                    <div class="game-thumbnail">${game.icon}</div>
+                    <div class="game-info">
+                        <div class="game-title">${game.name}</div>
+                        <div class="game-category">${game.category.toUpperCase()}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Filter games by category
+        function filterGames(category) {
+            // Update active pill
+            document.querySelectorAll('.category-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
             event.target.classList.add('active');
-        }
-        
-        function loadGame(url) {
-            // Create a game viewer
-            let gamesTab = document.getElementById('gamesTab');
-            gamesTab.innerHTML = `
-                <button onclick="goBack()" style="margin-bottom: 20px; padding: 10px 20px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; border-radius: 25px; cursor: pointer;">← Back to Games</button>
-                <iframe src="${url}" allowfullscreen></iframe>
-            `;
-        }
-        
-        function goBack() {
-            location.reload();
-        }
-        
-        function performSearch() {
-            let query = document.getElementById('searchInput').value.toLowerCase();
-            let searchResults = document.getElementById('gamesTab');
-            
-            if (query.includes('2048') || query.includes('math')) {
-                loadGame('https://www.coolmathgames.com/0-2048');
-            } else if (query.includes('run')) {
-                loadGame('https://www.coolmathgames.com/0-run-3');
-            } else if (query.includes('papa') || query.includes('pizza')) {
-                loadGame('https://www.coolmathgames.com/0-papas-pizzeria');
-            } else if (query.includes('bloons') || query.includes('td')) {
-                loadGame('https://www.coolmathgames.com/0-bloons-tower-defense-5');
-            } else if (query.includes('chess')) {
-                loadGame('https://www.coolmathgames.com/0-chess');
+
+            // Filter games
+            let filtered;
+            if (category === 'all') {
+                filtered = games;
             } else {
-                alert('Try searching for: 2048, run, papa, bloons, or chess');
+                filtered = games.filter(g => g.category === category);
+            }
+            
+            displayGamesInContainer(filtered, 'allGames');
+            
+            // Scroll to all games section
+            document.getElementById('allGames').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Search games
+        function searchGames() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                displayGamesInContainer(games, 'allGames');
+            } else {
+                const filtered = games.filter(game => 
+                    game.name.toLowerCase().includes(searchTerm) || 
+                    game.description.toLowerCase().includes(searchTerm)
+                );
+                displayGamesInContainer(filtered, 'allGames');
             }
         }
-        
+
+        // Play game
+        function playGame(gameName, gameUrl) {
+            document.getElementById('currentGameTitle').textContent = `Playing: ${gameName}`;
+            document.getElementById('gameFrame').src = gameUrl;
+            document.getElementById('gameModal').style.display = 'block';
+        }
+
+        // Close game
+        function closeGame() {
+            document.getElementById('gameModal').style.display = 'none';
+            document.getElementById('gameFrame').src = '';
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const frame = document.getElementById('gameFrame');
+            if (frame.requestFullscreen) {
+                frame.requestFullscreen();
+            } else if (frame.webkitRequestFullscreen) {
+                frame.webkitRequestFullscreen();
+            } else if (frame.msRequestFullscreen) {
+                frame.msRequestFullscreen();
+            }
+        }
+
+        // Refresh game
+        function refreshGame() {
+            const frame = document.getElementById('gameFrame');
+            const currentSrc = frame.src;
+            frame.src = '';
+            setTimeout(() => {
+                frame.src = currentSrc;
+            }, 100);
+        }
+
         // Handle Enter key in search
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                performSearch();
+                searchGames();
+            }
+        });
+
+        // Initialize
+        displayGames();
+
+        // Keyboard shortcut: ESC to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeGame();
             }
         });
     </script>
