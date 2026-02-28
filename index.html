@@ -3,52 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Runner in Browser</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <title>Educational Game Hub</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        textarea { width: 100%; height: 200px; }
-        button { margin-top: 10px; padding: 10px; }
-        #output { margin-top: 20px; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        #searchInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        #searchInput:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        #searchButton {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #searchButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0 20px;
+        }
+        
+        .tab {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .tab.active {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            min-height: 500px;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+        
+        .game-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .game-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .game-card p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .featured-section {
+            margin-top: 40px;
+        }
+        
+        .featured-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-result {
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            #searchButton {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Run Python Code in Your Browser</h1>
-    <p>Enter your Python code below and click "Run" to execute it using Pyodide.</p>
-    <textarea id="code" placeholder="Enter Python code here...">
-print("Hello, World!")
-    </textarea>
-    <br>
-    <button id="runButton">Run</button>
-    <div id="output"></div>
+    <div class="container">
+        <header>
+            <h1>🎮 Educational Game Hub</h1>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search for educational games...">
+                    <button id="searchButton" onclick="performSearch()">🔍 Search</button>
+                </div>
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="tab active" onclick="switchTab('games')">Games</button>
+                <button class="tab" onclick="switchTab('featured')">Featured</button>
+                <button class="tab" onclick="switchTab('about')">About</button>
+            </div>
+        </header>
+        
+        <!-- Games Tab Content -->
+        <div id="gamesTab" class="content-section">
+            <h2 style="color: #333; margin-bottom: 20px;">Popular Educational Games</h2>
+            <div class="games-grid">
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-2048')">
+                    <h3>🎯 2048</h3>
+                    <p>Math puzzle game</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-run-3')">
+                    <h3>🏃 Run 3</h3>
+                    <p>Endless runner</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-papas-pizzeria')">
+                    <h3>🍕 Papa's Pizzeria</h3>
+                    <p>Time management</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-bloons-tower-defense-5')">
+                    <h3>🎈 Bloons TD 5</h3>
+                    <p>Tower defense</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-fireboy-and-watergirl-1-forest-temple')">
+                    <h3>🔥💧 Fireboy & Watergirl</h3>
+                    <p>Puzzle platformer</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-chess')">
+                    <h3>♟️ Chess</h3>
+                    <p>Strategy game</p>
+                </div>
+            </div>
+            
+            <div class="featured-section">
+                <h2 class="featured-title">From The Game Compilation</h2>
+                <div class="games-grid">
+                    <div class="game-card" onclick="loadGame('https://sites.google.com/site/thegamecompilation/home/1v1-lol')">
+                        <h3>⚔️ 1v1.LOL</h3>
+                        <p>Building battle royale</p>
+                    </div>
+                    <div class="game-card" onclick="loadGame('https://sites.google.com/site/thegamecompilation/home/among-us')">
+                        <h3>👾 Among Us</h3>
+                        <p>Social deduction</p>
+                    </div>
+                    <div class="game-card" onclick="loadGame('https://sites.google.com/site/thegamecompilation/home/retro-bowl')">
+                        <h3>🏈 Retro Bowl</h3>
+                        <p>Football management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Featured Tab Content (initially hidden) -->
+        <div id="featuredTab" class="content-section" style="display: none;">
+            <h2 style="color: #333; margin-bottom: 20px;">Game of the Week</h2>
+            <div style="text-align: center;">
+                <div class="game-card" style="max-width: 400px; margin: 0 auto;" onclick="loadGame('https://www.coolmathgames.com/0-papas-bakeria')">
+                    <h3>🥧 Papa's Bakeria</h3>
+                    <p>New game! Bake and serve delicious pies</p>
+                </div>
+            </div>
+            
+            <h2 style="color: #333; margin: 40px 0 20px;">Most Played This Month</h2>
+            <div class="games-grid">
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-snake')">
+                    <h3>🐍 Snake</h3>
+                    <p>Classic arcade game</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-pacman')">
+                    <h3>👻 Pac-Man</h3>
+                    <p>Maze chase classic</p>
+                </div>
+                <div class="game-card" onclick="loadGame('https://www.coolmathgames.com/0-tetris')">
+                    <h3>🧩 Tetris</h3>
+                    <p>Block stacking puzzle</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- About Tab Content (initially hidden) -->
+        <div id="aboutTab" class="content-section" style="display: none;">
+            <h2 style="color: #333; margin-bottom: 20px;">About Educational Game Hub</h2>
+            <div style="color: #555; line-height: 1.8; font-size: 1.1em;">
+                <p style="margin-bottom: 15px;">Welcome to Educational Game Hub! This website provides a collection of educational and fun games that can help develop critical thinking, problem-solving, and strategic planning skills.</p>
+                
+                <p style="margin-bottom: 15px;">All games featured here are appropriate for school settings and can be used during free time or as part of educational activities. The games help with:</p>
+                
+                <ul style="margin-left: 30px; margin-bottom: 20px;">
+                    <li>Mathematical thinking and logic</li>
+                    <li>Strategic planning and resource management</li>
+                    <li>Hand-eye coordination and reaction time</li>
+                    <li>Problem-solving and critical thinking</li>
+                </ul>
+                
+                <p>Please check with your teacher or school administrator to ensure you're using games during appropriate times and in accordance with school policies.</p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let pyodideReadyPromise;
-
-        async function loadPyodideAndPackages() {
-            let pyodide = await loadPyodide();
-            await pyodide.loadPackage(['micropip']);
-            return pyodide;
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.getElementById('gamesTab').style.display = 'none';
+            document.getElementById('featuredTab').style.display = 'none';
+            document.getElementById('aboutTab').style.display = 'none';
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Update active tab styling
+            let tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
         }
-
-        async function main() {
-            pyodideReadyPromise = loadPyodideAndPackages();
+        
+        function loadGame(url) {
+            // Create a game viewer
+            let gamesTab = document.getElementById('gamesTab');
+            gamesTab.innerHTML = `
+                <button onclick="goBack()" style="margin-bottom: 20px; padding: 10px 20px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; border-radius: 25px; cursor: pointer;">← Back to Games</button>
+                <iframe src="${url}" allowfullscreen></iframe>
+            `;
         }
-
-        main();
-
-        document.getElementById('runButton').addEventListener('click', async () => {
-            let pyodide = await pyodideReadyPromise;
-            let code = document.getElementById('code').value;
-            let output = document.getElementById('output');
-
-            try {
-                let result = await pyodide.runPythonAsync(code);
-                output.textContent = result !== undefined ? result : 'No output';
-                output.style.color = 'black';
-            } catch (err) {
-                output.textContent = err;
-                output.style.color = 'red';
+        
+        function goBack() {
+            location.reload();
+        }
+        
+        function performSearch() {
+            let query = document.getElementById('searchInput').value.toLowerCase();
+            let searchResults = document.getElementById('gamesTab');
+            
+            if (query.includes('2048') || query.includes('math')) {
+                loadGame('https://www.coolmathgames.com/0-2048');
+            } else if (query.includes('run')) {
+                loadGame('https://www.coolmathgames.com/0-run-3');
+            } else if (query.includes('papa') || query.includes('pizza')) {
+                loadGame('https://www.coolmathgames.com/0-papas-pizzeria');
+            } else if (query.includes('bloons') || query.includes('td')) {
+                loadGame('https://www.coolmathgames.com/0-bloons-tower-defense-5');
+            } else if (query.includes('chess')) {
+                loadGame('https://www.coolmathgames.com/0-chess');
+            } else {
+                alert('Try searching for: 2048, run, papa, bloons, or chess');
+            }
+        }
+        
+        // Handle Enter key in search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
             }
         });
     </script>
