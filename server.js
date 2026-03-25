@@ -21,65 +21,61 @@ io.on('connection', (socket) => {
             return;
         }
 
-        socket.emit('status', { message: `Launching browser…` });
+        socket.emit('status', { message: `🚀 Launching browser…` });
 
         try {
-            // Launch Puppeteer
+            // Launch Puppeteer (headless = true for server)
             browser = await puppeteer.launch({
-                headless: true,          // set to false to see the browser
+                headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
             page = await browser.newPage();
 
             // Go to Blooket and join game
-            socket.emit('status', { message: 'Navigating to Blooket…' });
+            socket.emit('status', { message: '🌐 Navigating to Blooket…' });
             await page.goto('https://www.blooket.com/play', { waitUntil: 'networkidle2' });
 
             // Enter game code
             await page.waitForSelector('input[placeholder="Game ID"]', { timeout: 10000 });
             await page.type('input[placeholder="Game ID"]', gameCode);
             await page.click('button[type="submit"]');
-            socket.emit('status', { message: 'Entered game code, waiting for game…' });
+            socket.emit('status', { message: '🎮 Entered game code, waiting for game…' });
 
             // Wait for the "Enter Name" screen
             await page.waitForSelector('input[placeholder="Enter your name"]', { timeout: 15000 });
             await page.type('input[placeholder="Enter your name"]', playerName || 'Bot');
             await page.click('button[type="submit"]');
-            socket.emit('status', { message: `Joined as ${playerName || 'Bot'}` });
+            socket.emit('status', { message: `👤 Joined as ${playerName || 'Bot'}` });
 
-            // Listen for questions by watching for the question container
+            // Game loop: watch for questions and answer
             let answerLock = false;
             while (true) {
                 // Wait for a question to appear
                 await page.waitForSelector('.question-text', { timeout: 60000 }).catch(() => {
-                    // If no question appears, the game might be over
-                    socket.emit('status', { message: 'Game may have ended.' });
+                    socket.emit('status', { message: '⏳ Game may have ended or no questions.' });
                     throw new Error('No question');
                 });
 
                 if (answerLock) continue;
                 answerLock = true;
 
-                // Extract answer options
+                // Find answer buttons
                 const answerButtons = await page.$$('.answer-button');
                 if (answerButtons.length === 0) {
-                    socket.emit('status', { message: 'No answer buttons found.' });
+                    socket.emit('status', { message: '❓ No answer buttons found.' });
                     answerLock = false;
                     continue;
                 }
 
-                let chosenButton = answerButtons[0];
-                if (answerMode === 'correct') {
-                    // Try to find correct answer (requires additional logic)
-                    // For simplicity, we just pick the first button
-                    // In a real bot, you'd need to know the correct answer.
-                }
+                let chosenButton = answerButtons[0]; // always pick first answer
+                // If you want to pick correct answer, you'd need external answer data.
 
                 // Click the chosen answer
+                const answerText = await page.evaluate(el => el.innerText, chosenButton);
                 await chosenButton.click();
-                socket.emit('status', { message: `Answered: ${await page.evaluate(el => el.innerText, chosenButton)}` });
+                socket.emit('status', { message: `🤖 Answered: ${answerText}` });
 
-                // Wait for next question
+                // Wait for next question (or until page updates)
                 await page.waitForFunction(() => {
                     const q = document.querySelector('.question-text');
                     return q && q.innerText !== '';
@@ -88,7 +84,7 @@ io.on('connection', (socket) => {
             }
 
         } catch (err) {
-            socket.emit('status', { message: `Error: ${err.message}` });
+            socket.emit('status', { message: `❌ Error: ${err.message}` });
             if (browser) await browser.close();
         }
     });
