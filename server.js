@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const Blooket = require('blooketjs');
+const puppeteer = require('puppeteer');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,55 +11,90 @@ app.use(express.static('public'));
 
 io.on('connection', (socket) => {
     console.log('Client connected');
-    let client = null;
-    let gameJoined = false;
+    let browser = null;
+    let page = null;
 
     socket.on('join', async (data) => {
-        const { gameCode, playerName, answerMode = 'first' } = data;
-        if (gameJoined) return;
+        const { gameCode, playerName, answerMode } = data;
+        if (!gameCode) {
+            socket.emit('status', { message: 'Please enter a game code.' });
+            return;
+        }
+
+        socket.emit('status', { message: `Launching browser…` });
 
         try {
-            client = new Blooket.Client();
-            const player = await client.joinGame(gameCode, playerName || 'Bot');
-            gameJoined = true;
+            // Launch Puppeteer
+            browser = await puppeteer.launch({
+                headless: true,          // set to false to see the browser
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+            page = await browser.newPage();
 
-            socket.emit('status', { message: `✅ Joined game ${gameCode} as ${player.name}` });
+            // Go to Blooket and join game
+            socket.emit('status', { message: 'Navigating to Blooket…' });
+            await page.goto('https://www.blooket.com/play', { waitUntil: 'networkidle2' });
 
-            client.on('question', async (question) => {
-                let answer;
-                if (answerMode === 'first') {
-                    answer = question.answers[0];
-                } else if (answerMode === 'correct') {
-                    // Attempt to find the correct answer (if the question object contains it)
-                    answer = question.answers.find(a => a.isCorrect) || question.answers[0];
-                } else {
-                    answer = question.answers[0];
+            // Enter game code
+            await page.waitForSelector('input[placeholder="Game ID"]', { timeout: 10000 });
+            await page.type('input[placeholder="Game ID"]', gameCode);
+            await page.click('button[type="submit"]');
+            socket.emit('status', { message: 'Entered game code, waiting for game…' });
+
+            // Wait for the "Enter Name" screen
+            await page.waitForSelector('input[placeholder="Enter your name"]', { timeout: 15000 });
+            await page.type('input[placeholder="Enter your name"]', playerName || 'Bot');
+            await page.click('button[type="submit"]');
+            socket.emit('status', { message: `Joined as ${playerName || 'Bot'}` });
+
+            // Listen for questions by watching for the question container
+            let answerLock = false;
+            while (true) {
+                // Wait for a question to appear
+                await page.waitForSelector('.question-text', { timeout: 60000 }).catch(() => {
+                    // If no question appears, the game might be over
+                    socket.emit('status', { message: 'Game may have ended.' });
+                    throw new Error('No question');
+                });
+
+                if (answerLock) continue;
+                answerLock = true;
+
+                // Extract answer options
+                const answerButtons = await page.$$('.answer-button');
+                if (answerButtons.length === 0) {
+                    socket.emit('status', { message: 'No answer buttons found.' });
+                    answerLock = false;
+                    continue;
                 }
 
-                if (answer) {
-                    await client.answerQuestion(question.id, answer);
-                    socket.emit('status', { message: `🤖 Answered: ${answer}` });
-                } else {
-                    socket.emit('status', { message: '⚠️ No answer found for this question' });
+                let chosenButton = answerButtons[0];
+                if (answerMode === 'correct') {
+                    // Try to find correct answer (requires additional logic)
+                    // For simplicity, we just pick the first button
+                    // In a real bot, you'd need to know the correct answer.
                 }
-            });
 
-            client.on('end', () => {
-                socket.emit('status', { message: '🏁 Game ended' });
-                gameJoined = false;
-            });
+                // Click the chosen answer
+                await chosenButton.click();
+                socket.emit('status', { message: `Answered: ${await page.evaluate(el => el.innerText, chosenButton)}` });
 
-            client.on('error', (err) => {
-                socket.emit('status', { message: `❌ Error: ${err.message}` });
-                gameJoined = false;
-            });
+                // Wait for next question
+                await page.waitForFunction(() => {
+                    const q = document.querySelector('.question-text');
+                    return q && q.innerText !== '';
+                }, { timeout: 30000 });
+                answerLock = false;
+            }
+
         } catch (err) {
-            socket.emit('status', { message: `❌ Failed to join: ${err.message}` });
+            socket.emit('status', { message: `Error: ${err.message}` });
+            if (browser) await browser.close();
         }
     });
 
-    socket.on('disconnect', () => {
-        if (client) client.disconnect();
+    socket.on('disconnect', async () => {
+        if (browser) await browser.close();
         console.log('Client disconnected');
     });
 });
